@@ -1,20 +1,20 @@
 # ZARA: Multi-Protocol Tunneling
 
-ZARA is a state-of-the-art, high-performance, and secure multiprotocol tunneling system built for the **Bun** era. It allows you to instantly expose local HTTP and TCP services to the internet through a hardened binary relay.
+ZARA is a fast and secure multi-protocol tunneling system built for [Bun](https://bun.sh). It allows you to expose local HTTP and TCP services to the internet through a secure binary relay.
 
 ---
 
-## � Features
+## 📦 Features
 
-- **Interactive TUI**: Terminal dashboard with keyboard navigation (Up/Down) and instant replay (`R`).
+- **Interactive TUI**: A clean terminal dashboard with keyboard navigation and request replay.
 - **CORS Support**: Simple CORS bypass (`--cors`) for local frontend development.
-- **Multiprotocol Support**: Seamlessly tunnel **HTTP (Web)**, **Static Folders**, and **Generic TCP** (SSH, Postgres, Redis).
-- **Security First**: 
-  - **Auto-TLS**: Automatic 4096-bit SSL certificate provisioning with HSTS.
-  - **Identity Verification (OTP)**: Protect public web links with a professional OTP portal.
-  - **Relay Authentication**: Secure your infrastructure with master auth tokens.
-- **Agent Clusters**: Connect multiple agents to the same tunnel ID for automatic Round-Robin load balancing.
-- **Protocol Compression**: Automatic Gzip compression for payloads > 1KB.
+- **Multi-Protocol Support**: Tunnel HTTP services, static folders, or generic TCP (DBs, SSH).
+- **Security**: 
+  - **Self-Signed TLS**: Automatic certificate provisioning for secure local connections.
+  - **Identity Verification (OTP)**: Protect your links with a professional OTP portal.
+  - **Relay Authentication**: Secure your relay with shared authentication tokens.
+- **Load Balancing**: Connect multiple agents to one ID for automatic round-robin distribution.
+- **Protocol Compression**: Automatic Gzip compression for efficient data transfer.
 
 ---
 
@@ -74,16 +74,18 @@ zara relay --token my-secret-token --max-rps 300
 
 ---
 
-## 🧩 Edge Middleware (`zara.config.ts`)
+## 🧩 Local Middleware (`zara.config.ts`)
 
-Create a `zara.config.ts` in your project root to intercept and modify traffic:
+ZARA supports local middleware that allows you to intercept and modify traffic directly on your machine. Create a `zara.config.ts` in your project folder:
 
 ```typescript
 export default {
+  // Modify incoming requests before they reach your local server
   async onRequest(req) {
-    req.headers['x-zara-intercepted'] = 'true';
+    req.headers['x-zara-custom'] = 'true';
     return req;
   },
+  // Modify outgoing responses before they are sent back to the relay
   async onResponse({ status, headers, body }) {
     headers['x-powered-by'] = 'ZARA';
     return { status, headers, body };
