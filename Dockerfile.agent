@@ -1,0 +1,13 @@
+# Use the official Bun image
+FROM oven/bun:latest
+
+WORKDIR /app
+
+# Copy the entire monorepo
+COPY . .
+
+# Install dependencies
+RUN bun install
+
+# Command will be overridden by docker-compose or CLI
+CMD ["bun", "run", "apps/agent/src/index.ts"]

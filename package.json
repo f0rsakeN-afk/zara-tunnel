@@ -1,0 +1,51 @@
+{
+  "name": "zara-tunnel",
+  "version": "1.0.0",
+  "description": "High-performance, secure multiprotocol tunneling for the Bun era. Built for developers who need speed and simplicity.",
+  "main": "dist/cli.js",
+  "type": "module",
+  "bin": {
+    "zara": "./dist/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f0rsakeN-afk/zara-tunnel.git"
+  },
+  "homepage": "https://github.com/f0rsakeN-afk/zara-tunnel",
+  "bugs": {
+    "url": "https://github.com/f0rsakeN-afk/zara-tunnel/issues"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "mkdir -p dist && bun build ./apps/agent/src/index.ts --outfile dist/agent.js --bundle --target bun && bun build ./apps/relay/src/index.ts --outfile dist/relay.js --bundle --target bun && bun build ./src/cli.ts --outfile dist/cli.js --bundle --target bun && chmod +x dist/cli.js",
+    "prepublishOnly": "bun run build",
+    "agent": "bun ./apps/agent/src/index.ts",
+    "relay": "bun ./apps/relay/src/index.ts",
+    "expose": "bun ./apps/agent/src/index.ts expose",
+    "share": "bun ./apps/agent/src/index.ts share",
+    "tcp": "bun ./apps/agent/src/index.ts tcp",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 bun run --watch ./apps/agent/src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "bun-types": "latest"
+  },
+  "keywords": [
+    "tunnel",
+    "ngrok",
+    "localhost",
+    "proxy",
+    "relay",
+    "multiplexer",
+    "tcp",
+    "http",
+    "bun"
+  ],
+  "author": "f0rsakeN-afk <nar3sh0@gmail.com>",
+  "license": "MIT"
+}

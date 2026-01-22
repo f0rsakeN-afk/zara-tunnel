@@ -1,0 +1,43 @@
+services:
+  relay:
+    build:
+      context: .
+      dockerfile: Dockerfile.relay
+    ports:
+      - "6969:6969"
+    environment:
+      - PORT=6969
+    volumes:
+      - certs:/app/certs
+    networks:
+      - zara-net
+
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    command: bun run apps/agent/src/index.ts expose 3000 --otp --relay wss://relay:6969/_ws
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    depends_on:
+      - relay
+      - web-app
+    networks:
+      - zara-net
+
+  web-app:
+    image: nginx:alpine
+    expose:
+      - "80"
+    # Mapping to 3000 for the agent to find it
+    ports:
+      - "3000:80"
+    networks:
+      - zara-net
+
+networks:
+  zara-net:
+    driver: bridge
+
+volumes:
+  certs:

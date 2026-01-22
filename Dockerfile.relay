@@ -1,0 +1,19 @@
+# Use the official Bun image
+FROM oven/bun:latest
+
+WORKDIR /app
+
+# Copy the entire monorepo
+COPY . .
+
+# Install dependencies
+RUN bun install
+
+# Expose the relay port
+EXPOSE 6969
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Run the relay server
+CMD ["bun", "run", "apps/relay/src/index.ts"]
