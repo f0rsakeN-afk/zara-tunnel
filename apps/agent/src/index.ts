@@ -232,10 +232,19 @@ const tcpConnections = new Map<string, any>();
 
 // Proxy Logic
 function connect() {
+    const isLocalRelay = relayUrl.includes("localhost") || relayUrl.includes("127.0.0.1");
+    if (isLocalRelay) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    }
+
     const ws = new WebSocket(relayUrl);
     ws.binaryType = "arraybuffer";
     ws.onopen = () => {
         ws.send(encodeMessage({ type: "HELLO", payload: { type: mode, port: isStatic ? 4999 : port, otpRequested: values.otp as boolean, requestedId: values.name as string, authToken } as AgentHello }));
+    };
+    ws.onerror = (e) => {
+        tunnelUrl = `Connection Error`;
+        draw();
     };
     ws.onmessage = async (event) => {
         const { msg, body: rawBody } = decodeMessage(new Uint8Array(event.data as ArrayBuffer));
@@ -249,6 +258,7 @@ function connect() {
             draw();
         } else if (msg.type === "ERROR") {
             tunnelUrl = `Error: ${msg.payload}`;
+            requestHistory.push({ id: "system", method: "ERROR", path: msg.payload, status: 500, duration: 0, headers: {}, reqSize: 0, resSize: 0 });
             draw();
         } else if (msg.type === "REQ") {
             let req = msg.payload as TunnelRequest;

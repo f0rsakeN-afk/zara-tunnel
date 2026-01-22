@@ -73,8 +73,6 @@ const server = serve<WebSocketData>({
 
     async fetch(req, server) {
         const responseHeaders = new Headers();
-        responseHeaders.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-
         const url = new URL(req.url);
         const host = req.headers.get("host") || "";
         const tunnelId = host.split(".")[0];
@@ -145,10 +143,10 @@ const server = serve<WebSocketData>({
                     }
 
                     let tunnelId = hello.requestedId || generateTunnelId();
+                    let otp: string | undefined;
 
                     let group = tunnels.get(tunnelId);
                     if (!group) {
-                        let otp: string | undefined;
                         let otpHash: string | undefined;
                         if (hello.otpRequested) { otp = generateOTP(); otpHash = await hashOTP(otp, tunnelId); }
 
@@ -194,7 +192,7 @@ const server = serve<WebSocketData>({
                     ws.data.tunnelId = tunnelId;
                     ws.data.connectionId = connectionId;
 
-                    ws.send(encodeMessage({ type: "READY", payload: { tunnelId, url: `https://${tunnelId}.${ws.data.host || 'localhost'}`, tcpPort } as TunnelReady }));
+                    ws.send(encodeMessage({ type: "READY", payload: { tunnelId, url: `https://${tunnelId}.${ws.data.host || 'localhost'}`, otp, tcpPort } as TunnelReady }));
                     console.log(`ZARA: Agent joined ${hello.type.toUpperCase()} ${tunnelId} (Total: ${group.connections.length})`);
                     break;
                 }
