@@ -1,11 +1,14 @@
 {
-  "name": "zara-tunnel",
+  "name": "@f0rsaken-afk/zara-tunnel",
   "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "High-performance, secure multiprotocol tunneling for the Bun era. Built for developers who need speed and simplicity.",
   "main": "dist/cli.js",
   "type": "module",
   "bin": {
-    "zara": "./dist/cli.js"
+    "zara": "dist/cli.js"
   },
   "repository": {
     "type": "git",
