@@ -244,6 +244,7 @@ function connect() {
             const r = msg.payload as TunnelReady;
             tunnelUrl = r.url;
             tcpPort = r.tcpPort;
+            requestHistory.push({ id: "system", method: "READY", path: tunnelUrl, status: 200, duration: 0, headers: {}, reqSize: 0, resSize: 0 });
             if (r.otp) requestHistory.push({ id: "system", method: "OTP", path: r.otp, status: 200, duration: 0, headers: {}, reqSize: 0, resSize: 0 });
             draw();
         } else if (msg.type === "ERROR") {

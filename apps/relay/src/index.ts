@@ -42,6 +42,7 @@ interface TunnelGroup {
 interface WebSocketData {
     tunnelId?: string;
     connectionId?: string;
+    host?: string;
 }
 
 const MAX_RPS = parseInt((values["max-rps"] as string) || process.env.MAX_RPS || "150");
@@ -79,7 +80,7 @@ const server = serve<WebSocketData>({
         const tunnelId = host.split(".")[0];
 
         if (url.pathname === "/_ws") {
-            return server.upgrade(req, { data: { tunnelId: undefined } }) ? undefined : new Response("Upgrade Failed", { status: 400 });
+            return server.upgrade(req, { data: { tunnelId: undefined, host } }) ? undefined : new Response("Upgrade Failed", { status: 400 });
         }
 
         if (!tunnelId || tunnelId === "localhost") return new Response(`ZARA Relay: ${BRAND_NAME}`, { status: 200 });
@@ -193,7 +194,7 @@ const server = serve<WebSocketData>({
                     ws.data.tunnelId = tunnelId;
                     ws.data.connectionId = connectionId;
 
-                    ws.send(encodeMessage({ type: "READY", payload: { tunnelId, url: `https://${tunnelId}.localhost:${server.port}`, tcpPort } as TunnelReady }));
+                    ws.send(encodeMessage({ type: "READY", payload: { tunnelId, url: `https://${tunnelId}.${ws.data.host || 'localhost'}`, tcpPort } as TunnelReady }));
                     console.log(`ZARA: Agent joined ${hello.type.toUpperCase()} ${tunnelId} (Total: ${group.connections.length})`);
                     break;
                 }

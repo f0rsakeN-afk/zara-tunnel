@@ -23,7 +23,7 @@ ZARA is a fast and secure multi-protocol tunneling system built for [Bun](https:
 ZARA is optimized for [Bun](https://bun.sh). Install it globally:
 
 ```bash
-bun install -g zara-tunnel
+bun install -g @f0rsak3n1598/zara-tunnel
 ```
 
 ---
